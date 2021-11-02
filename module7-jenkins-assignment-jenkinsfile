@@ -19,7 +19,7 @@ pipeline {
     stage ('Build Docker Image') {
       steps {
         sh '''
-        docker image build -t cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h) -f ./module7-jenkins-assignment/Dockerfile --build-arg GIT_COMMIT_ID=$(git log -1 --format=%h) --build-arg JENKINS_BUILD_NUMBER=${BUILD_NUMBER}
+        docker image build -t cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h) -f ./module7-jenkins-assignment-jenkinsfile --build-arg GIT_COMMIT_ID=$(git log -1 --format=%h) --build-arg JENKINS_BUILD_NUMBER=${BUILD_NUMBER}
         '''
       }
     }
@@ -28,14 +28,6 @@ pipeline {
       steps {
         sh '''
         docker image push cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h)
-        '''
-      }
-    }
-
-    stage ('Deploy Docker Image and Run Application') {
-      steps {
-        sh '''
-        docker run --name module7-jenkins-assignment -p 82:82 -dit cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h)
         '''
       }
     }
