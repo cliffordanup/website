@@ -2,6 +2,10 @@ pipeline {
 
   agent any
 
+  environment {
+    DOCKERHUB_CREDS=credentials('docker-creds')
+  }
+
   options {
     buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
     timeout(time: 180, unit: 'SECONDS')
@@ -27,6 +31,7 @@ pipeline {
     stage ('Push Docker Image to Docker Registry') {
       steps {
         sh '''
+        echo $DOCKERHEB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USN --password-stdin
         docker image push cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h)
         '''
       }
