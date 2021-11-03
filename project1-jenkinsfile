@@ -1,0 +1,63 @@
+pipeline {
+
+  agent any
+
+  environment {
+    DOCKERHUB_CREDS=credentials('docker-creds')
+  }
+
+  options {
+    buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    timeout(time: 180, unit: 'SECONDS')
+    timestamps()
+    disableConcurrentBuilds()
+  }
+
+  stages {
+    stage ('Checkout Source Code') {
+      agent {
+        label 'worker1-test'
+      }
+      steps {
+        git 'https://github.com/cliffordanup/website.git'
+      }
+    }
+
+    stage ('Build Docker Image') {
+      agent {
+        label 'worker1-test'
+      }
+      steps {
+        sh '''
+        docker image build -t cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h) -f project1/Dockerfile --build-arg GIT_COMMIT_ID=$(git log -1 --format=%h) --build-arg JENKINS_BUILD_NUMBER=${BUILD_NUMBER} .
+        '''
+      }
+    }
+
+    stage ('Push Docker Image to Docker Registry') {
+      agent {
+        label 'worker1-test'
+      }
+      steps {
+        sh '''
+        echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
+        docker image rm $(docker images -q cliffordanup/*)
+        docker image push cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h)
+        '''
+      }
+    }
+
+    stage ('Deploy Docker Image and Run Application') {
+      agent {
+        label 'worker1-test'
+      }
+      steps {
+        sh '''
+        docker rm -f project1
+        docker run --name project1 -p 8082:80 -dit cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h)
+        '''
+      }
+    }
+  }
+
+}
