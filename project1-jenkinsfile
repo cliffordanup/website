@@ -29,9 +29,6 @@ pipeline {
       }
       steps {
         sh '''
-        set +e
-        docker image rm $(docker images -q cliffordanup/*) 2> /dev/null
-        set -e
         docker image build -t cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h) -f project1/Dockerfile --build-arg GIT_COMMIT_ID=$(git log -1 --format=%h) --build-arg JENKINS_BUILD_NUMBER=${BUILD_NUMBER} .
         '''
       }
