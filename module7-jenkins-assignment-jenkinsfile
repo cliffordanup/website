@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage ('Checkout Source Code') {
       steps {
-        git credentialsId: 'ddf08263-034f-46e4-b97e-cd0efa9fbeb4', url: 'https://github.com/cliffordanup/module7-jenkins-assignment.git'
+        git url: 'https://github.com/cliffordanup/website.git'
       }
     }
 
