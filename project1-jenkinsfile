@@ -46,7 +46,7 @@ pipeline {
       }
     }
 
-    stage ('Deploy Docker Image and Run Application') {
+    stage ('Deploy Docker on Test Server') {
       agent {
         label 'worker1-test'
       }
@@ -59,6 +59,30 @@ pipeline {
         '''
       }
     }
+
+    stage ('Test Application') {
+      agent {
+        label 'worker1-test'
+      }
+      steps {
+        sh '''
+        java -jar intellipaat-project1-test.jar
+        '''
+      }
+    }
+
+    stage ('Deploy Application to Prod Server') {
+      agent {
+        label 'worker2-prod'
+      }
+      steps {
+        sh '''
+        set +e
+        docker rm -f project1 2> /dev/null
+        set -e
+        docker run --name project1 -p 8082:80 -dit cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h)
+        '''
+      }
   }
 
 }
