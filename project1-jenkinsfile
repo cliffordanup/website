@@ -83,6 +83,7 @@ pipeline {
         docker run --name project1 -p 8082:80 -dit cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h)
         '''
       }
+    }
   }
 
 }
