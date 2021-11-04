@@ -66,7 +66,7 @@ pipeline {
       }
       steps {
         sh '''
-        java -jar intellipaat-project1-test.jar
+        java -jar project1/intellipaat-project1-test.jar
         '''
       }
     }
