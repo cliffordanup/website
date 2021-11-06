@@ -1,0 +1,36 @@
+---
+# tasks file for project2-k8s-config
+
+ - name: Prepare to install k8s tools kubelet kubeadm and kubectl
+   shell: |
+     sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+     sudo apt-get update
+
+ - name: Install k8s tools kubelet kubeadm kubectl
+   apt:
+     name: "{{ item }}"
+     state: present
+   loop: "{{ K8S_TOOLS }}"
+
+ - name: Mark the k8s tools on hold to prevent auto upgrade
+   dpkg_selections:
+     name: "{{ item }}"
+     selection: hold
+   loop: "{{ K8S_PACKAGES }}"
+
+ - name: Create /home/ubuntu/.kube directory is created
+   file:
+     path: /home/ubuntu/.kube
+     state: directory
+     owner: ubuntu
+     group: ubuntu
+     mode: 0700
+
+ - name: Copy k8s config file
+   copy:
+     src: files/config
+     dest: /home/ubuntu/.kube/config
+     mode: 0600
+     owner: ubuntu
+     group: ubuntu
