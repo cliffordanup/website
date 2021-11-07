@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: project2-test-container
-        image: cliffordanup/intellipaat-project2:${BUILD_NUMBER}.$(git log -1 --format=%h)
+        image: cliffordanup/placeholder
         ports:
         - containerPort: 80
       tolerations:
