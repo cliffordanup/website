@@ -16,7 +16,7 @@ pipeline {
   stages {
     stage ('Checkout Source Code') {
       steps {
-        git branch: 'master', url: 'https://github.com/cliffordanup/website.git'
+        git 'https://github.com/cliffordanup/website.git'
       }
     }
 
@@ -41,9 +41,8 @@ pipeline {
       steps {
         sh '''
         set +e
-        kubectl delete -f project2/project2-test-deployment.yml
-        set -e
         kubectl apply -f project2/project2-test-deployment.yml
+        set -e
         '''
       }
     }
@@ -60,9 +59,8 @@ pipeline {
       steps {
         sh '''
         set +e
-        kubectl delete -f project2/project2-prod-deployment.yml
-        set -e
         kubectl apply -f project2/project2-prod-deployment.yml
+        set -e
         '''
       }
     }
