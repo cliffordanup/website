@@ -50,6 +50,7 @@ pipeline {
     stage ('Test Application in Test Server') {
       steps {
         sh '''
+        sleep 10
         java -jar project2/intellipaat-project2-testing-test.jar
         '''
       }
@@ -68,6 +69,7 @@ pipeline {
     stage ('Test Application in Prod Server') {
       steps {
         sh '''
+        sleep 10
         java -jar project2/intellipaat-project2-testing-prod.jar
         '''
       }
