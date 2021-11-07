@@ -1,0 +1,7 @@
+---
+# Ansible playbook to deploy project2 k8s config file to Jenkins worker nodes
+
+ - name: Ansible playbook to deploy project2 k8s config file to Jenkins Worker Nodes
+   hosts: jenkins_worker_nodes
+   roles:
+     - project2-k8s-config

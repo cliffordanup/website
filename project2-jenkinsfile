@@ -41,7 +41,7 @@ pipeline {
       steps {
         sh '''
         set +e
-        kubectl apply -f project2/project2-test-deployment.yml
+        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -1 --format=%h)/" project2/project2-test-deployment.yml | kubectl apply -f -
         set -e
         '''
       }
@@ -50,6 +50,7 @@ pipeline {
     stage ('Test Application in Test Server') {
       steps {
         sh '''
+        sleep 10
         java -jar project2/intellipaat-project2-testing-test.jar
         '''
       }
@@ -59,7 +60,7 @@ pipeline {
       steps {
         sh '''
         set +e
-        kubectl apply -f project2/project2-prod-deployment.yml
+        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -1 --format=%h)/" project2/project2-prod-deployment.yml | kubectl apply -f -
         set -e
         '''
       }
@@ -68,6 +69,7 @@ pipeline {
     stage ('Test Application in Prod Server') {
       steps {
         sh '''
+        sleep 10
         java -jar project2/intellipaat-project2-testing-prod.jar
         '''
       }
