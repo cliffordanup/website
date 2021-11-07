@@ -13,6 +13,10 @@ pipeline {
     disableConcurrentBuilds()
   }
 
+  triggers {
+  cron 'H 0 25 * *'
+  }
+
   stages {
     stage ('Checkout Source Code') {
       steps {
