@@ -41,7 +41,7 @@ pipeline {
       steps {
         sh '''
         set +e
-        kubectl apply -f project2/project2-test-deployment.yml
+        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -1 --format=%h)/" project2/project2-test-deployment.yml | kubectl apply -f -
         set -e
         '''
       }
@@ -59,7 +59,7 @@ pipeline {
       steps {
         sh '''
         set +e
-        kubectl apply -f project2/project2-prod-deployment.yml
+        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -1 --format=%h)/" project2/project2-prod-deployment.yml | kubectl apply -f -
         set -e
         '''
       }
