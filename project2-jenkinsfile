@@ -23,7 +23,7 @@ pipeline {
     stage ('Build Docker Image') {
       steps {
         sh '''
-        docker image build -t cliffordanup/intellipaat-project2:${BUILD_NUMBER}.$(git log -1 --format=%h) -f project2/Dockerfile --build-arg GIT_COMMIT_ID=$(git log -1 --format=%h) --build-arg JENKINS_BUILD_NUMBER=${BUILD_NUMBER} .
+        docker image build -t cliffordanup/intellipaat-project2:${BUILD_NUMBER}.$(git log -b env.GIT_BRANCH -1 --format=%h) -f project2/Dockerfile --build-arg GIT_COMMIT_ID=$(git log -b env.GIT_BRANCH -1 --format=%h) --build-arg JENKINS_BUILD_NUMBER=${BUILD_NUMBER} .
         '''
       }
     }
@@ -32,7 +32,7 @@ pipeline {
       steps {
         sh '''
         echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
-        docker image push cliffordanup/intellipaat-project2:${BUILD_NUMBER}.$(git log -1 --format=%h)
+        docker image push cliffordanup/intellipaat-project2:${BUILD_NUMBER}.$(git log -b env.GIT_BRANCH -1 --format=%h)
         '''
       }
     }
@@ -41,7 +41,7 @@ pipeline {
       steps {
         sh '''
         set +e
-        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -1 --format=%h)/" project2/project2-test-deployment.yml | kubectl apply -f -
+        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -b env.GIT_BRANCH -1 --format=%h)/" project2/project2-test-deployment.yml | kubectl apply -f -
         set -e
         '''
       }
@@ -60,7 +60,7 @@ pipeline {
       steps {
         sh '''
         set +e
-        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -1 --format=%h)/" project2/project2-prod-deployment.yml | kubectl apply -f -
+        sed "s/cliffordanup\\/placeholder/cliffordanup\\/intellipaat-project2:${BUILD_NUMBER}\\.$(git log -b env.GIT_BRANCH -1 --format=%h)/" project2/project2-prod-deployment.yml | kubectl apply -f -
         set -e
         '''
       }
