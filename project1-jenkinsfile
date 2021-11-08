@@ -71,19 +71,6 @@ pipeline {
       }
     }
 
-    stage ('Deploy Application to Prod Server') {
-      agent {
-        label 'worker2-prod'
-      }
-      steps {
-        sh '''
-        set +e
-        docker rm -f project1 2> /dev/null
-        set -e
-        docker run --name project1 -p 8082:80 -dit cliffordanup/intellipaat-project1:${BUILD_NUMBER}.$(git log -1 --format=%h)
-        '''
-      }
-    }
   }
 
 }
