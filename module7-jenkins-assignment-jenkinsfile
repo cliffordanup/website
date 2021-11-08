@@ -14,11 +14,6 @@ pipeline {
   }
 
   stages {
-    stage ('Checkout Source Code') {
-      steps {
-        git url: 'https://github.com/cliffordanup/website.git'
-      }
-    }
 
     stage ('Build Docker Image') {
       steps {
@@ -33,6 +28,14 @@ pipeline {
         sh '''
         echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
         docker image push cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h)
+        '''
+      }
+    }
+
+    stage ('Deploy Docker Image and Run Application') {
+      steps {
+        sh '''
+        docker run --name module7-jenkins-assignment -p 82:82 -dit cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h)
         '''
       }
     }
