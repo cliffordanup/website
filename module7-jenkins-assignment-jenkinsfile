@@ -36,14 +36,6 @@ pipeline {
         '''
       }
     }
-
-    stage ('Deploy Docker Image and Run Application') {
-      steps {
-        sh '''
-        docker run --name module7-jenkins-assignment -p 82:82 -dit cliffordanup/module7-jenkins-assignment:${BUILD_NUMBER}.$(git log -1 --format=%h)
-        '''
-      }
-    }
   }
 
 }
