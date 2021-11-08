@@ -14,11 +14,6 @@ pipeline {
   }
 
   stages {
-    stage ('Checkout Source Code') {
-      steps {
-        git 'https://github.com/cliffordanup/website.git'
-      }
-    }
 
     stage ('Build Docker Image') {
       steps {
